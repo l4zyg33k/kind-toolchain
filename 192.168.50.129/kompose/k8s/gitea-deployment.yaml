@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose.yml
+    kompose.service.expose: gitea.192.168.50.129.nip.io
+    kompose.service.expose.ingress-class-name: nginx
+    kompose.version: 1.31.2 (HEAD)
+    kompose.volume.size: 1Gi
+    kompose.volume.storage-class-name: standard
+    kompose.volume.type: persistentVolumeClaim
+  creationTimestamp: null
+  labels:
+    io.kompose.service: gitea
+  name: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: gitea
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f ../docker-compose.yml
+        kompose.service.expose: gitea.192.168.50.129.nip.io
+        kompose.service.expose.ingress-class-name: nginx
+        kompose.version: 1.31.2 (HEAD)
+        kompose.volume.size: 1Gi
+        kompose.volume.storage-class-name: standard
+        kompose.volume.type: persistentVolumeClaim
+      creationTimestamp: null
+      labels:
+        io.kompose.network/kompose-default: "true"
+        io.kompose.service: gitea
+    spec:
+      containers:
+        - env:
+            - name: GITEA__database__DB_TYPE
+              value: postgres
+            - name: GITEA__database__HOST
+              value: postgres:5432
+            - name: GITEA__database__NAME
+              value: gitea
+            - name: GITEA__database__PASSWD
+              value: gitea
+            - name: GITEA__database__USER
+              value: gitea
+            - name: TZ
+              value: Asia/Seoul
+            - name: USER_GID
+              value: "1000"
+            - name: USER_UID
+              value: "1000"
+          image: gitea/gitea
+          name: gitea
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+            - containerPort: 22
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /data
+              name: gt-data
+      restartPolicy: Always
+      volumes:
+        - name: gt-data
+          persistentVolumeClaim:
+            claimName: gt-data
+status: {}
