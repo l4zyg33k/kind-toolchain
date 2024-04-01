@@ -27,7 +27,7 @@ services:
     ports:
       - 8080
     labels:
-      kompose.service.expose: "adminer.192.168.1.129.nip.io" 
+      kompose.service.expose: "adminer.192.168.50.129.nip.io"
       kompose.service.expose.ingress-class-name: nginx 
 
   redmine:
@@ -49,7 +49,7 @@ services:
       - REDMINE_PLUGINS_MIGRATE=true
       - TZ=Asia/Seoul
     labels:
-      kompose.service.expose: "redmine.192.168.1.129.nip.io"
+      kompose.service.expose: "redmine.192.168.50.129.nip.io"
       kompose.service.expose.ingress-class-name: nginx 
       kompose.volume.size: 1Gi
       kompose.volume.storage-class-name: standard
@@ -75,7 +75,7 @@ services:
     depends_on:
       - postgres 
     labels:
-      kompose.service.expose: "gitea.192.168.1.129.nip.io"
+      kompose.service.expose: "gitea.192.168.50.129.nip.io"
       kompose.service.expose.ingress-class-name: nginx 
       kompose.volume.size: 1Gi
       kompose.volume.storage-class-name: standard
@@ -91,7 +91,7 @@ services:
     volumes:
       - jk-home:/var/jenkins_home
     labels:
-      kompose.service.expose: "jenkins.192.168.1.129.nip.io"
+      kompose.service.expose: "jenkins.192.168.50.129.nip.io"
       kompose.service.expose.ingress-class-name: nginx 
       kompose.volume.size: 1Gi
       kompose.volume.storage-class-name: standard
