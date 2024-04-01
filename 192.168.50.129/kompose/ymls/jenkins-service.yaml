@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose.yml
+    kompose.service.expose: jenkins.192.168.1.129.nip.io
+    kompose.service.expose.ingress-class-name: nginx
+    kompose.version: 1.31.2 (HEAD)
+    kompose.volume.size: 1Gi
+    kompose.volume.storage-class-name: standard
+    kompose.volume.type: persistentVolumeClaim
+  creationTimestamp: null
+  labels:
+    io.kompose.service: jenkins
+  name: jenkins
+spec:
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+    - name: "50000"
+      port: 50000
+      targetPort: 50000
+  selector:
+    io.kompose.service: jenkins
+status:
+  loadBalancer: {}

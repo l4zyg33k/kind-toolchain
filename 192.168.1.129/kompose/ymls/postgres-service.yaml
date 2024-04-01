@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose.yml
+    kompose.controller.type: statefulset
+    kompose.service.type: headless
+    kompose.version: 1.31.2 (HEAD)
+    kompose.volume.size: 1Gi
+    kompose.volume.storage-class-name: standard
+    kompose.volume.type: persistentVolumeClaim
+  creationTimestamp: null
+  labels:
+    io.kompose.service: postgres
+  name: postgres
+spec:
+  clusterIP: None
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    io.kompose.service: postgres
+  type: ClusterIP
+status:
+  loadBalancer: {}

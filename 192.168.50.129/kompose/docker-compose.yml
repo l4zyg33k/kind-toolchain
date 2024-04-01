@@ -1,0 +1,107 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    image: postgres
+    restart: always
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres 
+      - TZ=Asia/Seoul
+    ports:
+      - 5432
+    labels:
+      kompose.service.type: headless
+      kompose.controller.type: statefulset
+      kompose.volume.size: 1Gi
+      kompose.volume.storage-class-name: standard
+      kompose.volume.type: persistentVolumeClaim
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - postgres 
+    ports:
+      - 8080
+    labels:
+      kompose.service.expose: "adminer.192.168.1.129.nip.io" 
+      kompose.service.expose.ingress-class-name: nginx 
+
+  redmine:
+    image: redmine 
+    restart: always
+    depends_on:
+      - postgres 
+    volumes:
+      - rm-files:/usr/src/redmine/files
+      - rm-plugins:/usr/src/redmine/plugins
+      - rm-themes:/usr/src/redmine/public/themes
+    ports:
+      - 3000
+    environment:
+      - REDMINE_DB_POSTGRES=postgres
+      - REDMINE_DB_USERNAME=redmine
+      - REDMINE_DB_PASSWORD=redmine
+      - REDMINE_DB_DATABASE=redmine
+      - REDMINE_PLUGINS_MIGRATE=true
+      - TZ=Asia/Seoul
+    labels:
+      kompose.service.expose: "redmine.192.168.1.129.nip.io"
+      kompose.service.expose.ingress-class-name: nginx 
+      kompose.volume.size: 1Gi
+      kompose.volume.storage-class-name: standard
+      kompose.volume.type: persistentVolumeClaim
+
+  gitea:
+    image: gitea/gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=postgres:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=gitea
+      - TZ=Asia/Seoul
+    restart: always
+    volumes:
+      - gt-data:/data
+    ports:
+      - 3000
+      - 22
+    depends_on:
+      - postgres 
+    labels:
+      kompose.service.expose: "gitea.192.168.1.129.nip.io"
+      kompose.service.expose.ingress-class-name: nginx 
+      kompose.volume.size: 1Gi
+      kompose.volume.storage-class-name: standard
+      kompose.volume.type: persistentVolumeClaim
+
+  jenkins: 
+    image: jenkins/jenkins
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - 8080
+      - 50000
+    volumes:
+      - jk-home:/var/jenkins_home
+    labels:
+      kompose.service.expose: "jenkins.192.168.1.129.nip.io"
+      kompose.service.expose.ingress-class-name: nginx 
+      kompose.volume.size: 1Gi
+      kompose.volume.storage-class-name: standard
+      kompose.volume.type: persistentVolumeClaim
+
+volumes:
+
+  pg-data:
+  rm-files:
+  rm-plugins:
+  rm-themes:
+  gt-data:
+  jk-home:
