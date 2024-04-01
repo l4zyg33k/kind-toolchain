@@ -5,6 +5,7 @@ metadata:
     kompose.cmd: kompose convert -f ../docker-compose.yml
     kompose.service.expose: jenkins.192.168.50.129.nip.io
     kompose.service.expose.ingress-class-name: nginx
+    kompose.serviceaccount-name: jenkins
     kompose.version: 1.31.2 (HEAD)
     kompose.volume.size: 1Gi
     kompose.volume.storage-class-name: standard
@@ -26,6 +27,7 @@ spec:
         kompose.cmd: kompose convert -f ../docker-compose.yml
         kompose.service.expose: jenkins.192.168.50.129.nip.io
         kompose.service.expose.ingress-class-name: nginx
+        kompose.serviceaccount-name: jenkins
         kompose.version: 1.31.2 (HEAD)
         kompose.volume.size: 1Gi
         kompose.volume.storage-class-name: standard
@@ -51,6 +53,7 @@ spec:
             - mountPath: /var/jenkins_home
               name: jk-home
       restartPolicy: Always
+      serviceAccountName: jenkins
       volumes:
         - name: jk-home
           persistentVolumeClaim:
